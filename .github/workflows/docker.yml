@@ -1,0 +1,51 @@
+name: Build Docker Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      corednsVersion:
+        description: coredns version to be build
+        required: true
+        default: v1.8.3
+      dnsredirVersion:
+        description: dnsredir version to be build
+        required: true
+        default: v0.0.8
+
+env:
+  APP_NAME: coredns
+  DOCKERHUB_REPO: isayme/coredns
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          platforms: |
+            linux/amd64
+            linux/arm/v6
+            linux/arm/v7
+            linux/arm64/v8
+          build-args: |
+            COREDNS_VERSION=${{ github.event.inputs.corednsVersion }}
+            DNSREDIR_VERSION=${{ github.event.inputs.dnsredirVersion }}
+          tags: |
+            ${{ env.DOCKERHUB_REPO }}:${{ github.event.inputs.corednsVersion }}
+            ${{ env.DOCKERHUB_REPO }}:latest
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
