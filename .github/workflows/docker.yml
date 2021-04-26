@@ -11,6 +11,10 @@ on:
         description: dnsredir version to be build
         required: true
         default: v0.0.8
+      adsVersion:
+        description: ads version to be build
+        required: true
+        default: v0.2.5
 
 env:
   APP_NAME: coredns
@@ -44,6 +48,7 @@ jobs:
           build-args: |
             COREDNS_VERSION=${{ github.event.inputs.corednsVersion }}
             DNSREDIR_VERSION=${{ github.event.inputs.dnsredirVersion }}
+            ADS_VERSION=${{ github.event.inputs.adsVersion }}
           tags: |
             ${{ env.DOCKERHUB_REPO }}:${{ github.event.inputs.corednsVersion }}
             ${{ env.DOCKERHUB_REPO }}:latest
