@@ -24,6 +24,8 @@ RUN cd ads && rm -f go.mod go.sum && go mod init github.com/c-mueller/ads
 # ENV GOPROXY=https://goproxy.cn,direct
 
 RUN cd coredns \
+  && sed -i "s|require (|require (\n\tgithub.com/leiless/dnsredir ${DNSREDIR_VERSION}|g" go.mod \
+  && sed -i "s|require (|require (\n\tgithub.com/c-mueller/ads ${ADS_VERSION}|g" go.mod \
   && echo "replace (" >> go.mod \
   && echo "    github.com/leiless/dnsredir => ../dnsredir" >> go.mod \
   && echo "    github.com/c-mueller/ads => ../ads" >> go.mod \
