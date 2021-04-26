@@ -10,9 +10,12 @@ ARG DNSREDIR_VERSION=v0.0.8
 ENV DNSREDIR_VERSION=${DNSREDIR_VERSION}
 
 RUN mkdir -p coredns && git clone --depth 1 -b ${COREDNS_VERSION} https://github.com/coredns/coredns.git coredns
-RUN mkdir -p coredns/plugin/dnsredir && git clone --depth 1 -b ${DNSREDIR_VERSION} https://github.com/leiless/dnsredir.git coredns/plugin/dnsredir
 
-RUN cd coredns && make
+RUN cd coredns \
+  && go mod download \
+  && go get github.com/leiless/dnsredir@${DNSREDIR_VERSION} \
+  && sed -i "s|forward:forward|dnsredir:github.com/leiless/dnsredir\nforward:forward|g" plugin.cfg \
+  && make
 
 FROM alpine
 WORKDIR /app
