@@ -19,8 +19,8 @@ RUN mkdir -p coredns && git clone --depth 1 -b ${COREDNS_VERSION} https://github
 RUN mkdir -p dnsredir && git clone --depth 1 -b ${DNSREDIR_VERSION} https://github.com/leiless/dnsredir.git dnsredir
 RUN mkdir -p ads && git clone --depth 1 -b ${ADS_VERSION} https://github.com/c-mueller/ads.git ads
 
-RUN cd dnsredir && rm go.mod go.sum && go mod init github.com/leiless/dnsredir
-RUN cd ads && rm go.mod go.sum && go mod init github.com/c-mueller/ads
+RUN cd dnsredir && rm -f go.mod go.sum && go mod init github.com/leiless/dnsredir
+RUN cd ads && rm -f go.mod go.sum && go mod init github.com/c-mueller/ads
 
 RUN cd coredns && echo "replace (" >> go.mod
 RUN cd coredns && echo "    github.com/leiless/dnsredir => ../dnsredir" >> go.mod
