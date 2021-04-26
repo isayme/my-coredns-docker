@@ -13,9 +13,8 @@ ARG ADS_VERSION=v0.2.5
 ENV ADS_VERSION=${ADS_VERSION}
 
 RUN mkdir -p coredns && git clone --depth 1 -b ${COREDNS_VERSION} https://github.com/coredns/coredns.git coredns
-
+RUN cd coredns && go mod download
 RUN cd coredns \
-  && go mod download \
   && go get github.com/leiless/dnsredir@${DNSREDIR_VERSION} \
   && go get github.com/c-mueller/ads@${ADS_VERSION} \
   && sed -i "s|forward:forward|dnsredir:github.com/leiless/dnsredir\nforward:forward|g" plugin.cfg \
