@@ -5,3 +5,20 @@
 
 - add plugin: dnsredir
 - add plugin: ads
+
+# Docker Compose
+```
+version: '3'
+
+services:
+  coredns:
+    container_name: coredns
+    image: isayme/coredns:latest
+    restart: unless-stopped
+    ports:
+      # dns serve with 53 port
+      - "53:53/udp"
+    volumes:
+      # coredns config file
+      - ./config/coredns/Corefile:/app/Corefile
+```
